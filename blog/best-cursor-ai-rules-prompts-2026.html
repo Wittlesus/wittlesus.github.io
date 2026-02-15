@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Best Cursor AI Rules and Prompts for Developers 2026</title>
+  <meta name="description" content="Custom .cursorrules configurations and prompts tested across 7 production apps. 10x your development speed.">
+  <meta property="og:title" content="Best Cursor AI Rules and Prompts for Developers 2026">
+  <meta property="og:description" content="Custom .cursorrules configurations and prompts tested across 7 production apps. 10x your development speed.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://wittlesus.github.io/blog/best-cursor-ai-rules-prompts-2026.html">
+  <link rel="canonical" href="https://wittlesus.github.io/blog/best-cursor-ai-rules-prompts-2026.html">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; color: #1a1a2e; background: #fafafa; }
+    .container { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; }
+    nav { margin-bottom: 2rem; font-size: 0.9rem; }
+    nav a { color: #4361ee; text-decoration: none; }
+    h1 { font-size: 2rem; margin-bottom: 1rem; line-height: 1.3; }
+    h2 { font-size: 1.4rem; margin: 2rem 0 0.8rem; }
+    h3 { font-size: 1.15rem; margin: 1.5rem 0 0.5rem; }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.3rem; }
+    code { background: #f0f0f0; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9em; }
+    pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; }
+    pre code { background: none; color: inherit; padding: 0; }
+    blockquote { border-left: 3px solid #4361ee; padding-left: 1rem; margin: 1rem 0; color: #555; }
+    a { color: #4361ee; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; font-size: 0.9rem; }
+    th { background: #f5f5f5; }
+    strong { color: #1a1a2e; }
+    .cta { background: #4361ee; color: #fff; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; margin: 2rem 0; }
+    .cta a { color: #fff; font-weight: 700; text-decoration: none; font-size: 1.1rem; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #e0e0e0; color: #888; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <nav><a href="/">Home</a> / <a href="/blog/best-cursor-ai-rules-prompts-2026.html">Cursor AI Rules</a></nav>
+  <h1>Best Cursor AI Rules and Prompts for Developers 2026</h1>
+<p>Cursor AI has transformed how developers write code. Instead of Googling syntax, copying from Stack Overflow, and wrestling with boilerplate, you describe what you want and Cursor generates it.</p>
+<p>But there's a massive gap between developers who treat Cursor like autocomplete and those who use it as a force multiplier.</p>
+<p>The difference? <strong>Custom rules and optimized prompts.</strong></p>
+<p>I've spent 200+ hours testing Cursor workflows across seven production SaaS apps. This guide shares the exact rules, prompts, and configurations that 10x my development speed.</p>
+<h2>What Are Cursor AI Rules?</h2>
+<p>Cursor rules are instructions that shape how the AI generates code. Think of them as a .cursorrules file that tells Cursor your preferences, conventions, and constraints.</p>
+<h3>Why Custom Rules Matter</h3>
+<p><strong>Without rules, Cursor generates generic code:</strong>
+- Inconsistent naming conventions
+- Missing error handling
+- No TypeScript types
+- Doesn't follow your project patterns</p>
+<p><strong>With optimized rules, Cursor generates production-ready code:</strong>
+- Matches your codebase style
+- Includes error handling by default
+- Uses your preferred libraries
+- Follows your architectural patterns</p>
+<h3>Real Example: Before and After</h3>
+<p><strong>Without rules, I asked:</strong> "Create a user signup form"</p>
+<p><strong>Cursor generated:</strong></p>
+<pre><code class="language-jsx">function SignupForm() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault()
+    // TODO: implement signup
+  }
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input type=&quot;email&quot; value={email} onChange={e =&gt; setEmail(e.target.value)} /&gt;
+      &lt;input type=&quot;password&quot; value={password} onChange={e =&gt; setPassword(e.target.value)} /&gt;
+      &lt;button type=&quot;submit&quot;&gt;Sign Up&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}
+</code></pre>
+<p>This code is technically correct but useless in production. No validation, no error states, no accessibility, no styling.</p>
+<p><strong>With my custom rules, same prompt:</strong></p>
+<p><strong>Cursor generated:</strong></p>
+<pre><code class="language-typescript">'use client'
+
+import { useState } from 'react'
+import { signUp } from '@/app/actions/auth'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useFormState } from 'react-dom'
+
+export default function SignupForm() {
+  const [state, formAction] = useFormState(signUp, null)
+
+  return (
+    &lt;form action={formAction} className=&quot;space-y-4&quot;&gt;
+      &lt;div&gt;
+        &lt;Label htmlFor=&quot;email&quot;&gt;Email&lt;/Label&gt;
+        &lt;Input
+          id=&quot;email&quot;
+          name=&quot;email&quot;
+          type=&quot;email&quot;
+          required
+          autoComplete=&quot;email&quot;
+          aria-describedby={state?.errors?.email ? 'email-error' : undefined}
+        /&gt;
+        {state?.errors?.email &amp;&amp; (
+          &lt;p id=&quot;email-error&quot; className=&quot;text-sm text-red-600 mt-1&quot;&gt;
+            {state.errors.email}
+          &lt;/p&gt;
+        )}
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;Label htmlFor=&quot;password&quot;&gt;Password&lt;/Label&gt;
+        &lt;Input
+          id=&quot;password&quot;
+          name=&quot;password&quot;
+          type=&quot;password&quot;
+          required
+          minLength={8}
+          autoComplete=&quot;new-password&quot;
+          aria-describedby={state?.errors?.password ? 'password-error' : undefined}
+        /&gt;
+        {state?.errors?.password &amp;&amp; (
+          &lt;p id=&quot;password-error&quot; className=&quot;text-sm text-red-600 mt-1&quot;&gt;
+            {state.errors.password}
+          &lt;/p&gt;
+        )}
+      &lt;/div&gt;
+
+      &lt;Button type=&quot;submit&quot; className=&quot;w-full&quot;&gt;
+        Sign Up
+      &lt;/Button&gt;
+
+      {state?.errors?.general &amp;&amp; (
+        &lt;p className=&quot;text-sm text-red-600 text-center&quot;&gt;{state.errors.general}&lt;/p&gt;
+      )}
+    &lt;/form&gt;
+  )
+}
+</code></pre>
+<p>Same prompt. Completely different output. This code is production-ready with proper TypeScript types, error handling, accessibility attributes, and shadcn/ui components.</p>
+<p>That's the power of custom rules.</p>
+<h2>Essential Cursor Rules for Modern Development</h2>
+<p>Here are the rules I use across all projects.</p>
+<h3>Rule 1: Framework and Architecture Preferences</h3>
+<pre><code class="language-markdown"># Framework: Next.js 15 with App Router
+- Use Server Components by default
+- Only use 'use client' when necessary (interactivity, hooks, browser APIs)
+- Prefer Server Actions over API routes for mutations
+- Use proper TypeScript types throughout
+
+# State Management
+- Use React Server Components for server state
+- Use URL search params for shareable state
+- Use React hooks (useState, useReducer) for local UI state
+- Avoid Redux/Zustand unless explicitly needed
+</code></pre>
+<p>This rule ensures Cursor generates modern Next.js patterns instead of outdated Pages Router code.</p>
+<h3>Rule 2: Component Structure</h3>
+<pre><code class="language-markdown"># Component Guidelines
+- One component per file
+- Use TypeScript interfaces for props
+- Include JSDoc comments for complex components
+- Use shadcn/ui components when available
+- Follow this structure:
+  1. Imports
+  2. Type definitions
+  3. Component function
+  4. Export statement
+
+# Example:
+import { Button } from '@/components/ui/button'
+
+interface MyComponentProps {
+  title: string
+  onAction: () =&gt; void
+}
+
+/**
+ * Displays a card with title and action button
+ */
+export default function MyComponent({ title, onAction }: MyComponentProps) {
+  return (
+    &lt;div className=&quot;border p-4 rounded-lg&quot;&gt;
+      &lt;h2&gt;{title}&lt;/h2&gt;
+      &lt;Button onClick={onAction}&gt;Action&lt;/Button&gt;
+    &lt;/div&gt;
+  )
+}
+</code></pre>
+<h3>Rule 3: Error Handling</h3>
+<pre><code class="language-markdown"># Error Handling Requirements
+- Always wrap async operations in try-catch
+- Return user-friendly error messages
+- Log errors to console in development
+- Use error boundaries for component errors
+- Validate user input before processing
+
+# Server Actions must return { error?: string, data?: T }
+</code></pre>
+<p>This prevents Cursor from generating code that crashes on errors.</p>
+<h3>Rule 4: Database Operations</h3>
+<pre><code class="language-markdown"># Database Guidelines (Prisma)
+- Always include error handling for queries
+- Use transactions for multi-step operations
+- Include proper TypeScript types from Prisma Client
+- Use select to limit returned fields
+- Add indexes for frequently queried fields
+- Use proper cascading deletes
+
+# Example:
+try {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, email: true, name: true },
+  })
+
+  if (!user) {
+    return { error: 'User not found' }
+  }
+
+  return { data: user }
+} catch (error) {
+  console.error('Failed to fetch user:', error)
+  return { error: 'Database error' }
+}
+</code></pre>
+<h3>Rule 5: Styling and UI</h3>
+<pre><code class="language-markdown"># Styling Guidelines
+- Use Tailwind CSS utility classes
+- Prefer shadcn/ui components over custom components
+- Use semantic HTML (header, main, section, article)
+- Include proper ARIA labels for accessibility
+- Mobile-first responsive design
+- Use consistent spacing scale (4, 8, 16, 24, 32, 64)
+
+# Color Classes
+- Primary: bg-blue-600 hover:bg-blue-700
+- Destructive: bg-red-600 hover:bg-red-700
+- Text: text-gray-900 dark:text-gray-100
+</code></pre>
+<h3>Rule 6: Security Best Practices</h3>
+<pre><code class="language-markdown"># Security Requirements
+- Never expose API keys or secrets in client code
+- Validate all user input on the server
+- Use prepared statements (Prisma handles this)
+- Sanitize user-generated content before display
+- Implement rate limiting on sensitive endpoints
+- Use HTTPS-only cookies for sessions
+- Validate user permissions before data access
+</code></pre>
+<h3>Rule 7: Testing Considerations</h3>
+<pre><code class="language-markdown"># Testing Guidelines
+- Write testable code (pure functions where possible)
+- Avoid tight coupling to external services
+- Use dependency injection for easier mocking
+- Include edge cases in logic (empty arrays, null values, etc.)
+</code></pre>
+<h2>High-Impact Cursor Prompts for Common Tasks</h2>
+<p>Beyond rules, specific prompts dramatically improve output quality.</p>
+<h3>Prompt: Creating a New Feature</h3>
+<p><strong>Bad prompt:</strong>
+"Create a task list"</p>
+<p><strong>Good prompt:</strong>
+"Create a task list component with:
+- Server Component that fetches tasks from Prisma
+- Client Component for task items with checkbox and delete button
+- Server Actions for creating, toggling, and deleting tasks
+- Optimistic updates using useOptimistic
+- Error handling and loading states
+- Use shadcn/ui Button and Checkbox components
+- TypeScript types for all props and functions"</p>
+<p>The specific prompt gets specific output.</p>
+<h3>Prompt: Refactoring Code</h3>
+<p><strong>Bad prompt:</strong>
+"Improve this code"</p>
+<p><strong>Good prompt:</strong>
+"Refactor this component to:
+- Extract repeated logic into custom hooks
+- Move inline styles to Tailwind classes
+- Add TypeScript types for all variables
+- Extract magic numbers into named constants
+- Add error handling for async operations
+- Improve accessibility with ARIA labels"</p>
+<h3>Prompt: Database Schema Design</h3>
+<p><strong>Bad prompt:</strong>
+"Create a database schema for a blog"</p>
+<p><strong>Good prompt:</strong>
+"Create a Prisma schema for a blog with:
+- User model (id, email, name, createdAt)
+- Post model (id, title, slug, content, published, authorId, createdAt, updatedAt)
+- Comment model (id, content, postId, authorId, createdAt)
+- Proper relations (User has many Posts, Post has many Comments)
+- Cascade deletes (deleting User deletes their Posts)
+- Unique constraints on slug
+- Indexes on frequently queried fields (authorId, postId, published)"</p>
+<h3>Prompt: API Route Creation</h3>
+<p><strong>Bad prompt:</strong>
+"Create an API route for creating posts"</p>
+<p><strong>Good prompt:</strong>
+"Create a Server Action for creating blog posts:
+- Accept title, content, and published status
+- Validate user is authenticated
+- Validate title is 1-200 characters
+- Validate content is not empty
+- Generate URL-safe slug from title
+- Check slug uniqueness, append number if needed
+- Insert post using Prisma transaction
+- Return { error?: string, data?: Post }
+- Revalidate /blog path on success
+- Include proper TypeScript types"</p>
+<h3>Prompt: Form Creation</h3>
+<p><strong>Bad prompt:</strong>
+"Create a contact form"</p>
+<p><strong>Good prompt:</strong>
+"Create a contact form with:
+- Client Component using useFormState for Server Action
+- Fields: name (required), email (required, validated), message (required, min 10 chars)
+- shadcn/ui Input, Textarea, and Button components
+- Display field-level validation errors
+- Disable submit button while submitting
+- Show success message after submission
+- Reset form on success
+- Full TypeScript types
+- ARIA labels for accessibility"</p>
+<h2>CursorRules Pro: Pre-Built Rules for Every Stack</h2>
+<p>Creating comprehensive rules takes time. I've spent 200+ hours optimizing rules for different tech stacks.</p>
+<p><strong><a href="https://buy.stripe.com/8x24gydPfeFY1AU5Bo08g05">CursorRules Pro</a></strong> ($14) includes production-ready rule sets for:</p>
+<h3>Included Rule Sets</h3>
+<p><strong>1. Next.js 15 Full-Stack SaaS</strong>
+- App Router patterns
+- Server Components and Server Actions
+- Prisma database operations
+- NextAuth authentication
+- Stripe payment integration
+- Email handling with React Email
+- 15 pages of detailed rules</p>
+<p><strong>2. Next.js + Supabase</strong>
+- Supabase client setup
+- Row-level security patterns
+- Real-time subscriptions
+- File upload handling
+- Auth best practices</p>
+<p><strong>3. React + TypeScript Best Practices</strong>
+- Component patterns
+- Custom hooks
+- State management
+- Performance optimization
+- Testing considerations</p>
+<p><strong>4. Tailwind + shadcn/ui</strong>
+- Component usage patterns
+- Styling conventions
+- Accessibility requirements
+- Responsive design rules</p>
+<p><strong>5. API Development (Node/Express)</strong>
+- RESTful endpoint structure
+- Error handling middleware
+- Input validation with Zod
+- Authentication patterns
+- Rate limiting</p>
+<p><strong>6. Database Patterns (Prisma + PostgreSQL)</strong>
+- Schema design best practices
+- Query optimization
+- Transaction handling
+- Migration strategies
+- Index recommendations</p>
+<p><strong>7. Testing (Jest + React Testing Library)</strong>
+- Component test patterns
+- Integration test structure
+- Mocking strategies
+- Coverage requirements</p>
+<h3>Bonus: Prompt Templates</h3>
+<p>CursorRules Pro includes 50+ prompt templates for common tasks:
+- "Create CRUD operations for [model]"
+- "Add authentication to [route]"
+- "Refactor [component] for performance"
+- "Add TypeScript types to [file]"</p>
+<p><strong><a href="https://buy.stripe.com/8x24gydPfeFY1AU5Bo08g05">Get CursorRules Pro ($14)</a></strong> and save 20+ hours of rule creation.</p>
+<h2>Advanced Cursor Techniques</h2>
+<p>Beyond rules and prompts, these techniques multiply effectiveness.</p>
+<h3>Technique 1: Context Windows</h3>
+<p>Cursor's context window is limited. Help it focus:</p>
+<p><strong>Instead of:</strong> "Fix the bugs in this project"</p>
+<p><strong>Do this:</strong>
+1. Open the specific buggy file
+2. Highlight the problematic function
+3. Prompt: "Fix the bug in this function where users can't submit forms when errors are present"</p>
+<p>Narrow context = better results.</p>
+<h3>Technique 2: Iterative Refinement</h3>
+<p>Don't expect perfect code on first generation.</p>
+<p><strong>Workflow:</strong>
+1. Generate initial code with detailed prompt
+2. Review output, identify issues
+3. Prompt: "Refactor this to handle the edge case where [specific scenario]"
+4. Repeat until production-ready</p>
+<h3>Technique 3: Code Review Mode</h3>
+<p>Use Cursor to review your own code:</p>
+<p><strong>Prompt:</strong> "Review this component for:
+- Security vulnerabilities
+- Performance issues
+- Accessibility problems
+- TypeScript type safety
+- Error handling gaps"</p>
+<p>Cursor often catches issues you miss.</p>
+<h3>Technique 4: Documentation Generation</h3>
+<p><strong>Prompt:</strong> "Add JSDoc comments to all functions in this file explaining:
+- Purpose
+- Parameters and their types
+- Return value
+- Example usage"</p>
+<p>Instant documentation.</p>
+<h3>Technique 5: Test Generation</h3>
+<p><strong>Prompt:</strong> "Generate Jest tests for this component covering:
+- Successful render with valid props
+- Error handling when API fails
+- User interactions (button clicks, form submissions)
+- Edge cases (empty data, null values)"</p>
+<h2>Common Cursor Mistakes (and Fixes)</h2>
+<h3>Mistake 1: Vague Prompts</h3>
+<p><strong>Problem:</strong> "Make this better"</p>
+<p><strong>Fix:</strong> "Refactor this to use Server Actions instead of API routes, add TypeScript types, and improve error handling"</p>
+<p>Be specific.</p>
+<h3>Mistake 2: Accepting First Output</h3>
+<p><strong>Problem:</strong> Using generated code without review</p>
+<p><strong>Fix:</strong> Always review, test, and iterate. Cursor is a tool, not a replacement for judgment.</p>
+<h3>Mistake 3: No Custom Rules</h3>
+<p><strong>Problem:</strong> Using default Cursor without configuration</p>
+<p><strong>Fix:</strong> Spend 30 minutes creating rules or use <strong><a href="https://buy.stripe.com/8x24gydPfeFY1AU5Bo08g05">CursorRules Pro</a></strong>.</p>
+<h3>Mistake 4: Overcomplicating Rules</h3>
+<p><strong>Problem:</strong> 50-page rule documents that Cursor can't process</p>
+<p><strong>Fix:</strong> Keep rules concise and focused. 5-10 pages max.</p>
+<h3>Mistake 5: Ignoring Context</h3>
+<p><strong>Problem:</strong> Cursor generates code that doesn't match your existing patterns</p>
+<p><strong>Fix:</strong> Include examples of your preferred patterns in rules.</p>
+<h2>Real-World Results: Before and After</h2>
+<p>Here's what happened when I optimized Cursor usage across projects:</p>
+<h3>Project 1: SaaS Authentication System</h3>
+<p><strong>Before (no rules):</strong>
+- 6 hours to build auth flow
+- 12 bugs found in testing
+- Inconsistent error handling
+- Missing TypeScript types</p>
+<p><strong>After (with optimized rules):</strong>
+- 2 hours to build auth flow
+- 3 bugs found in testing
+- Consistent error handling throughout
+- Full TypeScript coverage</p>
+<p><strong>Time saved:</strong> 4 hours + debugging time</p>
+<h3>Project 2: Stripe Payment Integration</h3>
+<p><strong>Before:</strong>
+- 8 hours reading Stripe docs and Stack Overflow
+- Webhook handling broke twice
+- Missing edge case handling</p>
+<p><strong>After:</strong>
+- 2 hours using CursorRules Pro Stripe templates
+- Webhook handling worked first try
+- Edge cases handled by default</p>
+<p><strong>Time saved:</strong> 6 hours</p>
+<h3>Project 3: Database Schema Refactor</h3>
+<p><strong>Before:</strong>
+- 5 hours manually updating schema
+- Broke relations in 3 places
+- Forgot to add indexes</p>
+<p><strong>After:</strong>
+- 1 hour using Cursor with Prisma rules
+- Relations automatically correct
+- Indexes suggested and added</p>
+<p><strong>Time saved:</strong> 4 hours</p>
+<p><strong>Total time saved across 3 projects:</strong> 14+ hours</p>
+<p>At my consulting rate of $150/hour, that's $2,100 in value from a $14 investment.</p>
+<h2>Cursor + AI-Assisted Development Tools</h2>
+<p>Cursor works even better when combined with complementary tools:</p>
+<h3>LaunchFast for SaaS Projects</h3>
+<p><strong><a href="https://buy.stripe.com/dRm14mfXngO6a7qbZM08g00">LaunchFast</a></strong> ($79) is a Next.js SaaS starter kit with all boilerplate pre-built.</p>
+<p><strong>Workflow:</strong>
+1. Start with LaunchFast foundation (auth, payments, database, UI)
+2. Use Cursor to build custom features on top
+3. Use CursorRules Pro to match LaunchFast's code patterns</p>
+<p>This combination is unstoppable. LaunchFast handles boilerplate, Cursor handles custom logic.</p>
+<h3>PromptVault for Prompt Management</h3>
+<p><strong><a href="https://buy.stripe.com/3cI6oG5iJ8hA93m4xk08g04">PromptVault</a></strong> ($19) stores and organizes your best prompts.</p>
+<p>Save prompts that work well, reuse them across projects.</p>
+<h3>Complete Developer Bundle</h3>
+<p><strong><a href="https://buy.stripe.com/5kQeVceTj0P8enGe7U08g06">Complete Bundle</a></strong> ($99) includes:
+- LaunchFast (SaaS starter)
+- CursorRules Pro (AI rules)
+- PromptVault (prompt storage)
+- SEO Blog Engine (content marketing)
+- Indie Hacker Toolkit (templates and guides)</p>
+<p>Everything you need to build and launch SaaS products faster.</p>
+<h2>Free Cursor Rules to Get Started</h2>
+<p>Before buying CursorRules Pro, try these basic rules:</p>
+<pre><code class="language-markdown"># Basic Development Rules
+
+## TypeScript
+- Use TypeScript for all files
+- Avoid `any` types
+- Use interfaces for objects
+- Use type for unions/primitives
+
+## Components (React/Next.js)
+- One component per file
+- Use functional components
+- Props should have TypeScript interfaces
+- Use destructuring for props
+
+## Styling
+- Use Tailwind CSS utility classes
+- Mobile-first responsive design
+- Consistent spacing: 4, 8, 16, 24, 32
+
+## Error Handling
+- Wrap async operations in try-catch
+- Return user-friendly error messages
+- Log errors in development
+
+## Code Quality
+- Use descriptive variable names
+- Add comments for complex logic
+- Keep functions small (&lt; 50 lines)
+- Extract repeated code into functions
+</code></pre>
+<p>Save this as <code>.cursorrules</code> in your project root.</p>
+<h2>Prompt Library: Copy and Paste</h2>
+<h3>Create a CRUD Feature</h3>
+<pre><code>Create complete CRUD operations for [MODEL] with:
+- Server Component listing all [MODEL]s with loading state
+- Client Component with create/edit modal using shadcn Dialog
+- Server Actions for create, update, delete operations
+- Form validation using Zod
+- Error handling and success messages
+- Optimistic updates using useOptimistic
+- TypeScript types for all operations
+- Include proper Prisma queries with error handling
+</code></pre>
+<h3>Refactor for Performance</h3>
+<pre><code>Refactor this component for performance:
+- Memoize expensive calculations with useMemo
+- Memoize callbacks with useCallback
+- Add React.memo where appropriate
+- Lazy load heavy components
+- Optimize re-renders
+- Explain each optimization
+</code></pre>
+<h3>Add Authentication Check</h3>
+<pre><code>Add authentication to this Server Component:
+- Check user session with auth()
+- Redirect to /login if not authenticated
+- Verify user has required permissions
+- Return 403 if insufficient permissions
+- Include proper TypeScript types
+- Handle edge cases (deleted user, expired session)
+</code></pre>
+<h3>Generate Tests</h3>
+<pre><code>Generate comprehensive Jest tests for this component:
+- Test successful render with valid props
+- Test all user interactions
+- Test error states
+- Test loading states
+- Test edge cases (null, undefined, empty data)
+- Use React Testing Library best practices
+- Achieve 90%+ code coverage
+</code></pre>
+<h2>Measuring Cursor Effectiveness</h2>
+<p>Track these metrics to measure improvement:</p>
+<p><strong>Development Speed:</strong>
+- Time to implement features (before vs after)
+- Number of bugs in initial implementation
+- Time spent debugging</p>
+<p><strong>Code Quality:</strong>
+- TypeScript coverage percentage
+- Number of type errors
+- Linter warnings/errors</p>
+<p><strong>Consistency:</strong>
+- Code review feedback volume
+- Style inconsistencies across files</p>
+<p>My results after optimizing Cursor:
+- <strong>40% faster feature development</strong>
+- <strong>60% fewer initial bugs</strong>
+- <strong>80% reduction in TypeScript errors</strong>
+- <strong>Consistent code style without manual enforcement</strong></p>
+<h2>Next Steps: Level Up Your Cursor Game</h2>
+<ol>
+<li><strong>Start with basic rules</strong> — Use the free rules above</li>
+<li><strong>Test with real tasks</strong> — Build a feature and measure time</li>
+<li><strong>Iterate on prompts</strong> — Save what works, discard what doesn't</li>
+<li><strong>Invest in quality rules</strong> — <a href="https://buy.stripe.com/8x24gydPfeFY1AU5Bo08g05">CursorRules Pro ($14)</a> pays for itself in 1 hour</li>
+<li><strong>Combine with other tools</strong> — <a href="https://buy.stripe.com/dRm14mfXngO6a7qbZM08g00">LaunchFast</a> for SaaS foundations, <a href="https://buy.stripe.com/3cI6oG5iJ8hA93m4xk08g04">PromptVault</a> for prompt management</li>
+</ol>
+<h2>Final Thoughts: Cursor Is a Force Multiplier</h2>
+<p>Cursor doesn't replace developer skill. It multiplies it.</p>
+<p>A senior developer with optimized Cursor rules outputs 2-3x more code at the same quality level.</p>
+<p>A junior developer with good rules writes code at mid-level quality.</p>
+<p>The key is intentional configuration. Cursor is only as good as the rules and prompts you provide.</p>
+<p><strong>Don't use Cursor like autocomplete. Use it like a junior developer who follows instructions perfectly.</strong></p>
+<p>Give it clear rules, specific prompts, and narrow context. Review and iterate on output.</p>
+<p>That's how you 10x your development speed.</p>
+<p><strong><a href="https://buy.stripe.com/8x24gydPfeFY1AU5Bo08g05">Get CursorRules Pro ($14)</a></strong> — Production-ready rules for Next.js, React, TypeScript, Prisma, and more. Save 20+ hours of rule creation.</p>
+<p><strong><a href="https://buy.stripe.com/5kQeVceTj0P8enGe7U08g06">Get Complete Bundle ($99)</a></strong> — CursorRules Pro + LaunchFast + PromptVault + 4 other tools at 60% off.</p>
+<p>Stop fighting Cursor. Configure it properly and watch your productivity soar.</p>
+<hr />
+<h2>Additional Resources</h2>
+<ul>
+<li><strong><a href="https://buy.stripe.com/dRm14mfXngO6a7qbZM08g00">LaunchFast Standard ($79)</a></strong> — Next.js SaaS starter that pairs perfectly with Cursor</li>
+<li><strong><a href="https://buy.stripe.com/5kQ4gy26x8hAa7q4xk08g01">LaunchFast Pro ($119)</a></strong> — Advanced features for complex SaaS projects</li>
+<li><strong><a href="https://buy.stripe.com/3cI6oG5iJ8hA93m4xk08g04">PromptVault ($19)</a></strong> — Organize and reuse your best Cursor prompts</li>
+<li><strong><a href="https://buy.stripe.com/9B66oG26x55o0wQ5Bo08g03">Indie Hacker Toolkit ($19)</a></strong> — Templates and guides for indie developers</li>
+</ul>
+<p>Build better software faster. The best developers aren't the ones who code the most — they're the ones who ship the most.</p>
+  <div class="cta"><a href="https://buy.stripe.com/8x24gydPfeFY1AU5Bo08g05">Get CursorRules Pro — $14</a></div>
+  <footer><p>&copy; 2026 Wittlesus. <a href="https://github.com/Wittlesus">GitHub</a> | <a href="/">More articles</a></p></footer>
+</div>
+</body>
+</html>
