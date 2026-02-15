@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Add AI Chat to Your Next.js App (Complete Guide 2026)</title>
+  <meta name="description" content="Step-by-step guide to adding production-ready AI chat to Next.js with Claude API, streaming responses, rate limiting, and auth-gated access.">
+  <meta property="og:title" content="How to Add AI Chat to Your Next.js App (Complete Guide 2026)">
+  <meta property="og:description" content="Step-by-step guide to adding production-ready AI chat to Next.js with Claude API, streaming, rate limiting, and auth-gated access.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://wittlesus.github.io/blog/add-ai-chat-nextjs-guide-2026.html">
+  <link rel="canonical" href="https://wittlesus.github.io/blog/add-ai-chat-nextjs-guide-2026.html">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; color: #1a1a2e; background: #fafafa; }
+    .container { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; }
+    nav { margin-bottom: 2rem; font-size: 0.9rem; }
+    nav a { color: #4361ee; text-decoration: none; }
+    h1 { font-size: 2rem; margin-bottom: 1rem; line-height: 1.3; }
+    h2 { font-size: 1.4rem; margin: 2rem 0 0.8rem; }
+    h3 { font-size: 1.15rem; margin: 1.5rem 0 0.5rem; }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.3rem; }
+    code { background: #f0f0f0; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9em; }
+    pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; }
+    pre code { background: none; color: inherit; padding: 0; }
+    blockquote { border-left: 3px solid #4361ee; padding-left: 1rem; margin: 1rem 0; color: #555; }
+    a { color: #4361ee; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; font-size: 0.9rem; }
+    th { background: #f5f5f5; }
+    strong { color: #1a1a2e; }
+    .cta { background: #4361ee; color: #fff; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; margin: 2rem 0; }
+    .cta a { color: #fff; font-weight: 700; text-decoration: none; font-size: 1.1rem; }
+    .time-est { background: #fff3cd; border: 1px solid #ffc107; padding: 0.75rem 1rem; border-radius: 6px; margin: 1rem 0; font-size: 0.9rem; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #e0e0e0; color: #888; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <nav><a href="/">Home</a> / <a href="/blog/add-ai-chat-nextjs-guide-2026.html">Add AI Chat to Next.js</a></nav>
+  <h1>How to Add AI Chat to Your Next.js App (Complete Guide 2026)</h1>
+<p>AI chat is quickly becoming a standard feature in modern SaaS applications. Whether you're building a customer support tool, a coding assistant, or a content generation platform, users expect real-time, conversational AI interfaces.</p>
+<p>But integrating AI chat into a Next.js app involves more than just calling an API. You need streaming responses, authentication, rate limiting, conversation persistence, and proper error handling. Getting all of these pieces working together is where most tutorials fall short.</p>
+<p>This guide walks through every layer of a production-ready AI chat integration in Next.js, from the API route to the frontend UI.</p>
+
+<h2>What You Need</h2>
+<ul>
+<li>Next.js 15+ with App Router</li>
+<li>An Anthropic API key (for Claude) or OpenAI API key</li>
+<li>A database for conversation persistence (PostgreSQL + Prisma recommended)</li>
+<li>Authentication set up (NextAuth v5 recommended)</li>
+</ul>
+<p>This guide uses Claude (Anthropic's API) for the examples, but the architecture applies to any LLM provider.</p>
+
+<h2>Step 1: The API Route</h2>
+<p>The core of your AI chat lives in a Next.js API route. This handles receiving the user's message, calling the LLM, and returning the response.</p>
+<div class="time-est">Estimated time: 2-3 hours for basic setup, 1-2 days for production-ready</div>
+
+<h3>Basic Version</h3>
+<pre><code>// src/app/api/ai/route.ts
+import Anthropic from "@anthropic-ai/sdk";
+import { NextRequest, NextResponse } from "next/server";
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY!,
+});
+
+export async function POST(req: NextRequest) {
+  const { prompt } = await req.json();
+
+  const message = await anthropic.messages.create({
+    model: "claude-sonnet-4-5-20250929",
+    max_tokens: 1024,
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  const text = message.content[0].type === "text"
+    ? message.content[0].text
+    : "";
+
+  return NextResponse.json({ response: text });
+}</code></pre>
+<p>This works for prototyping, but it has serious problems for production:</p>
+<ul>
+<li><strong>No authentication</strong> — anyone can call this endpoint and burn your API credits</li>
+<li><strong>No streaming</strong> — the user stares at a spinner until the full response is ready</li>
+<li><strong>No rate limiting</strong> — a single user can send thousands of requests</li>
+<li><strong>No input validation</strong> — malicious prompts can be expensive</li>
+</ul>
+
+<h3>Production Version</h3>
+<p>Here's what a production-ready version looks like. This is significantly more complex:</p>
+<pre><code>// src/app/api/ai/route.ts
+import Anthropic from "@anthropic-ai/sdk";
+import { NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY!,
+});
+
+const MAX_PROMPT_LENGTH = 4000;
+
+export async function POST(req: NextRequest) {
+  // 1. Authenticate the user
+  const session = await auth();
+  if (!session?.user?.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  // 2. Rate limit per user
+  const { success } = await rateLimit(session.user.id);
+  if (!success) {
+    return new Response("Rate limited", { status: 429 });
+  }
+
+  // 3. Validate input
+  const { prompt, systemPrompt } = await req.json();
+  if (!prompt || typeof prompt !== "string") {
+    return new Response("Invalid prompt", { status: 400 });
+  }
+  if (prompt.length > MAX_PROMPT_LENGTH) {
+    return new Response("Prompt too long", { status: 400 });
+  }
+
+  // 4. Check subscription tier for daily limits
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { stripePriceId: true },
+  });
+  const dailyLimit = user?.stripePriceId ? 1000 : 50;
+  const todayCount = await getDailyMessageCount(session.user.id);
+  if (todayCount >= dailyLimit) {
+    return new Response("Daily limit reached", { status: 429 });
+  }
+
+  // 5. Stream the response
+  const stream = await anthropic.messages.stream({
+    model: "claude-sonnet-4-5-20250929",
+    max_tokens: 1024,
+    system: systemPrompt || "You are a helpful assistant.",
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  // 6. Return as Server-Sent Events
+  const encoder = new TextEncoder();
+  const readable = new ReadableStream({
+    async start(controller) {
+      let fullText = "";
+      for await (const event of stream) {
+        if (
+          event.type === "content_block_delta" &&
+          event.delta.type === "text_delta"
+        ) {
+          fullText += event.delta.text;
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify({
+              text: event.delta.text
+            })}\n\n`)
+          );
+        }
+      }
+
+      // 7. Save to database after completion
+      await prisma.message.create({
+        data: {
+          userId: session.user.id,
+          role: "user",
+          content: prompt,
+        },
+      });
+      await prisma.message.create({
+        data: {
+          userId: session.user.id,
+          role: "assistant",
+          content: fullText,
+        },
+      });
+
+      controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+      controller.close();
+    },
+  });
+
+  return new Response(readable, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+    },
+  });
+}</code></pre>
+
+<p>That's about 80 lines of code for the API route alone. And we haven't touched the frontend yet.</p>
+
+<h2>Step 2: Rate Limiting</h2>
+<div class="time-est">Estimated time: 2-3 hours</div>
+<p>Rate limiting prevents a single user from draining your API budget. You need two layers:</p>
+<ol>
+<li><strong>Per-minute rate limit</strong> — prevents rapid-fire requests (10/min is reasonable)</li>
+<li><strong>Per-day usage limit</strong> — enforces tier-based access (50 free, 1000 paid)</li>
+</ol>
+<p>For development, an in-memory rate limiter works. For production, you need Redis or a database-backed counter.</p>
+<pre><code>// src/lib/rate-limit.ts
+const rateLimitMap = new Map&lt;string, { count: number; resetTime: number }&gt;();
+
+export async function rateLimit(userId: string) {
+  const now = Date.now();
+  const windowMs = 60_000; // 1 minute window
+  const maxRequests = 10;
+
+  const entry = rateLimitMap.get(userId);
+  if (!entry || now > entry.resetTime) {
+    rateLimitMap.set(userId, { count: 1, resetTime: now + windowMs });
+    return { success: true };
+  }
+  if (entry.count >= maxRequests) {
+    return { success: false };
+  }
+  entry.count++;
+  return { success: true };
+}</code></pre>
+<p>This in-memory version resets on deployment. For production, use <a href="https://upstash.com">Upstash Redis</a> or track request counts in your PostgreSQL database.</p>
+
+<h2>Step 3: The Chat UI Component</h2>
+<div class="time-est">Estimated time: 2-3 days</div>
+<p>Building a good chat interface is harder than it looks. You need:</p>
+<ul>
+<li>Message bubbles with proper alignment (user right, AI left)</li>
+<li>Auto-scrolling to the latest message</li>
+<li>Loading states (typing indicator during streaming)</li>
+<li>Error handling with retry buttons</li>
+<li>Code block rendering with syntax highlighting</li>
+<li>Mobile-responsive layout</li>
+</ul>
+
+<pre><code>// src/components/Chat.tsx
+"use client";
+import { useState, useRef, useEffect } from "react";
+
+export default function Chat() {
+  const [messages, setMessages] = useState&lt;Message[]&gt;([]);
+  const [input, setInput] = useState("");
+  const [isStreaming, setIsStreaming] = useState(false);
+  const scrollRef = useRef&lt;HTMLDivElement&gt;(null);
+
+  async function sendMessage() {
+    if (!input.trim() || isStreaming) return;
+
+    const userMsg = { role: "user", content: input };
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
+    setIsStreaming(true);
+
+    try {
+      const res = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: input }),
+      });
+
+      if (!res.ok) throw new Error("API error");
+
+      // Handle SSE streaming
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let aiText = "";
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "" },
+      ]);
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        const lines = chunk.split("\n");
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const data = line.slice(6);
+            if (data === "[DONE]") break;
+            const parsed = JSON.parse(data);
+            aiText += parsed.text;
+            setMessages((prev) => {
+              const updated = [...prev];
+              updated[updated.length - 1] = {
+                role: "assistant",
+                content: aiText,
+              };
+              return updated;
+            });
+          }
+        }
+      }
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        { role: "error", content: "Something went wrong. Try again." },
+      ]);
+    } finally {
+      setIsStreaming(false);
+    }
+  }
+
+  // Auto-scroll to bottom on new messages
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  return (
+    &lt;div className="flex flex-col h-full"&gt;
+      {/* Messages */}
+      &lt;div className="flex-1 overflow-y-auto p-4 space-y-4"&gt;
+        {messages.map((msg, i) => (
+          &lt;div
+            key={i}
+            className={`flex ${
+              msg.role === "user" ? "justify-end" : "justify-start"
+            }`}
+          &gt;
+            &lt;div
+              className={`max-w-[75%] rounded-2xl px-4 py-2 ${
+                msg.role === "user"
+                  ? "bg-black text-white"
+                  : "bg-gray-100 text-gray-800"
+              }`}
+            &gt;
+              {msg.content}
+            &lt;/div&gt;
+          &lt;/div&gt;
+        ))}
+        &lt;div ref={scrollRef} /&gt;
+      &lt;/div&gt;
+      {/* Input */}
+      &lt;form onSubmit={(e) => { e.preventDefault(); sendMessage(); }}&gt;
+        &lt;input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Ask anything..."
+          disabled={isStreaming}
+        /&gt;
+        &lt;button type="submit" disabled={isStreaming}&gt;Send&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<p>This is a simplified version. A production chat UI also needs markdown rendering, code syntax highlighting, copy buttons, conversation history loading, and responsive design adjustments. Expect to spend 2-3 days getting the UX right.</p>
+
+<h2>Step 4: Conversation Persistence</h2>
+<div class="time-est">Estimated time: 3-4 hours</div>
+<p>Users expect their conversations to be saved. This requires database models for conversations and messages:</p>
+<pre><code>// prisma/schema.prisma
+model Conversation {
+  id        String    @id @default(cuid())
+  title     String?
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  role           String       // "user" | "assistant" | "system"
+  content        String       @db.Text
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  tokenCount     Int?
+  createdAt      DateTime     @default(now())
+}</code></pre>
+<p>You also need API routes to list conversations, load a specific conversation's messages, and create new conversations. Each of these needs authentication checks.</p>
+
+<h2>Step 5: Multi-Persona Support</h2>
+<div class="time-est">Estimated time: 2-3 hours</div>
+<p>Many AI SaaS products offer different "modes" or personas — a code expert, a writing assistant, a business advisor. This is implemented through system prompts:</p>
+<pre><code>const personas = {
+  "code-expert": {
+    name: "Code Expert",
+    systemPrompt: "You are an expert software engineer...",
+  },
+  "writer": {
+    name: "Creative Writer",
+    systemPrompt: "You are a creative writing assistant...",
+  },
+  "advisor": {
+    name: "Business Advisor",
+    systemPrompt: "You are a startup business advisor...",
+  },
+};</code></pre>
+<p>The tricky part is letting users switch personas mid-conversation while keeping conversation context intact, and sanitizing the system prompt to prevent prompt injection from user input.</p>
+
+<h2>Step 6: Token Usage Tracking</h2>
+<div class="time-est">Estimated time: 2-3 hours</div>
+<p>If you're offering tiered access, you need to track how many tokens each user consumes. The Anthropic API returns token counts in the response:</p>
+<pre><code>const response = await anthropic.messages.create({...});
+
+// response.usage contains:
+// { input_tokens: 42, output_tokens: 156 }
+
+await prisma.user.update({
+  where: { id: userId },
+  data: {
+    totalTokensUsed: { increment: response.usage.input_tokens + response.usage.output_tokens },
+  },
+});</code></pre>
+<p>This is straightforward with non-streaming responses. With streaming, you need to count tokens from the final <code>message_delta</code> event, which requires careful event handling.</p>
+
+<h2>The Total Effort</h2>
+<p>Adding production-ready AI chat to a Next.js app involves:</p>
+<table>
+<tr><th>Component</th><th>Estimated Time</th></tr>
+<tr><td>API Route (auth, streaming, validation)</td><td>1-2 days</td></tr>
+<tr><td>Rate Limiting (per-minute + per-day)</td><td>2-3 hours</td></tr>
+<tr><td>Chat UI (messages, streaming, responsive)</td><td>2-3 days</td></tr>
+<tr><td>Conversation Persistence (DB + API routes)</td><td>3-4 hours</td></tr>
+<tr><td>Multi-Persona System</td><td>2-3 hours</td></tr>
+<tr><td>Token Tracking</td><td>2-3 hours</td></tr>
+<tr><td>Error Handling + Edge Cases</td><td>1-2 days</td></tr>
+<tr><td><strong>Total</strong></td><td><strong>5-10 days</strong></td></tr>
+</table>
+<p>That's 5-10 days of focused development, assuming you already have authentication and a database set up. If you're starting from scratch, add another week for the foundational infrastructure.</p>
+
+<h2>The Shortcut: LaunchFast</h2>
+<p>If you'd rather skip 2-3 weeks of integration work and start building your actual product features, <strong><a href="https://github.com/Wittlesus/launchfast-starter">LaunchFast</a></strong> includes everything described in this guide — already built, tested, and deployed.</p>
+<p>What you get out of the box:</p>
+<ul>
+<li><strong>Production-ready Claude AI integration</strong> with SSE streaming</li>
+<li><strong>Auth-gated access</strong> via NextAuth v5 (Google + GitHub OAuth)</li>
+<li><strong>Tier-based rate limiting</strong> — 50 messages/day free, 1,000/day for subscribers</li>
+<li><strong>Conversation persistence</strong> in PostgreSQL via Prisma 6</li>
+<li><strong>6 built-in AI personas</strong> with customizable system prompts</li>
+<li><strong>Token usage tracking</strong> per message and per user</li>
+<li><strong>Complete chat UI</strong> with streaming, loading states, and code rendering</li>
+<li><strong>80+ Playwright E2E tests</strong> covering the full flow</li>
+<li><strong>Stripe subscriptions</strong> with checkout, billing portal, and webhooks</li>
+<li><strong>Input validation</strong> (4,000 char limit, sanitization)</li>
+</ul>
+<p>One command to clone. Five minutes to configure. Deploy to Vercel and start building your product.</p>
+
+<div class="cta"><a href="https://buy.stripe.com/dRm14mfXngO6a7qbZM08g00">Get LaunchFast — $79 (one-time)</a></div>
+
+<p><strong><a href="https://buy.stripe.com/dRm14mfXngO6a7qbZM08g00">LaunchFast Standard ($79)</a></strong> — Everything you need to launch an AI-powered SaaS.</p>
+<p><strong><a href="https://buy.stripe.com/5kQ4gy26x8hAa7q4xk08g01">LaunchFast Pro ($119)</a></strong> — Standard plus priority support and advanced examples.</p>
+<p>Live demo: <a href="https://launchfast-starter.vercel.app">launchfast-starter.vercel.app</a> | Source: <a href="https://github.com/Wittlesus/launchfast-starter">GitHub</a></p>
+
+<blockquote>30-day money-back guarantee. If LaunchFast doesn't save you time, get a full refund.</blockquote>
+
+<hr />
+<h2>Related Articles</h2>
+<ul>
+<li><a href="/blog/best-nextjs-saas-starter-kits-2026.html">Best Next.js SaaS Starter Kits 2026 (Compared)</a></li>
+<li><a href="/blog/launch-saas-in-weekend-nextjs.html">How to Launch a SaaS in a Weekend with Next.js</a></li>
+<li><a href="/blog/launchfast-vs-shipfast.html">LaunchFast vs ShipFast: Honest Comparison</a></li>
+</ul>
+
+<h2>More Developer Tools</h2>
+<ul>
+<li><strong><a href="https://buy.stripe.com/5kQeVceTj0P8enGe7U08g06">Complete Bundle ($99)</a></strong> — LaunchFast plus 6 developer tools at 60% off</li>
+<li><strong><a href="https://buy.stripe.com/eVq7sKeTjcxQa7q9RE08g02">SEO Blog Engine ($29)</a></strong> — AI-powered SEO blog generator</li>
+<li><strong><a href="https://buy.stripe.com/8x24gydPfeFY1AU5Bo08g05">CursorRules Pro ($14)</a></strong> — AI coding configs for Cursor, Claude Code, Windsurf</li>
+</ul>
+
+  <footer><p>&copy; 2026 Wittlesus. <a href="https://github.com/Wittlesus">GitHub</a> | <a href="/">More articles</a></p></footer>
+</div>
+</body>
+</html>
